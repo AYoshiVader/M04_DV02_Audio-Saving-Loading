@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,7 @@ using UnityEngine;
 public class Box : MonoBehaviour
 {
     [SerializeField] Sprite[] _possibleSprites;
+    [SerializeField] AudioClip[] _clips;
 
     SpriteRenderer _sprite;
 
@@ -12,9 +14,27 @@ public class Box : MonoBehaviour
     void Start()
     {
         _sprite = GetComponent<SpriteRenderer>();
-        //_sprite.flipX = Random.Range(0, 1);
-        //_sprite.flipY = Random.Range(0, 1);
-        int randomSprite = Random.Range(0, _possibleSprites.Length - 1);
+        int flip = UnityEngine.Random.Range(0, 2);
+        if (flip == 1)
+            _sprite.flipX = true;
+        flip = UnityEngine.Random.Range(0, 2);
+        if (flip == 1)
+            _sprite.flipY = true;
+        int randomSprite = UnityEngine.Random.Range(0, _possibleSprites.Length);
         _sprite.sprite = _possibleSprites[randomSprite];
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.relativeVelocity.magnitude > 5f)
+        {
+            int index = UnityEngine.Random.Range(0, _clips.Length);
+            AudioClip clip = _clips[index];
+            GetComponent<AudioSource>().PlayOneShot(clip);
+        }
+        else
+        {
+            Debug.Log("Collision was too slow to play a sound " + collision.relativeVelocity.magnitude);
+        }
     }
 }

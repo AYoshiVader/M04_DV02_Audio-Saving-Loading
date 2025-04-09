@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [SelectionBase]
@@ -11,6 +12,23 @@ public class Monster : MonoBehaviour
     [SerializeField] ParticleSystem _particleSystem;
     
     bool _hasDied;
+
+    void OnMouseDown()
+    {
+        GetComponent<AudioSource>().Play();
+    }
+
+    IEnumerator Start()
+    {
+        float delay = UnityEngine.Random.Range(5f, 30f);
+        yield return new WaitForSeconds(delay);
+        while (!_hasDied)
+        {
+            GetComponent<AudioSource>().Play();
+            delay = UnityEngine.Random.Range(5f, 30f);
+            yield return new WaitForSeconds(delay);
+        }
+    }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
